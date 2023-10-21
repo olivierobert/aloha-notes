@@ -12,13 +12,18 @@ body {
     rgb(var(--background-start-rgb));
 }
 
+header {
+  height: 20vh;
+  text-align: center;
+}
+
 main {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
   padding: 6rem;
-  min-height: 100vh;
+  min-height: 80vh;
 }
 
 a {
