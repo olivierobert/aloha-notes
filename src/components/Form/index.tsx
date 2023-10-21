@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 export interface FormProps {
   noteId?: string;
@@ -11,6 +11,8 @@ const highlightMention = (body: string) => {
 };
 
 const Form = ({ noteId, onCreateSuccess } : FormProps) => {
+  const textInputRef = useRef(null);
+
   const [formData, setFormData] = useState({
     body: ''
   });
@@ -63,11 +65,19 @@ const Form = ({ noteId, onCreateSuccess } : FormProps) => {
 
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = event.target;
-
     console.log('textarea value', value);
 
     if (isMentioning) {
-      const hint = value.split(' ').pop()?.replace('@', '').toLowerCase();
+      const caretPosition = textInputRef.current?.selectionEnd;
+      console.log('caret positon', textInputRef.current?.selectionEnd);
+
+      const context = value.toLowerCase().slice(0, caretPosition);
+      console.log('context to filter', context);
+
+      const regex = /@(\w+)/g;
+      const matches = context.match(regex);
+      const hint = matches?.pop()?.replace('@', '');
+
       console.log('the hint', hint);
 
       if (hint) {
@@ -165,6 +175,7 @@ const Form = ({ noteId, onCreateSuccess } : FormProps) => {
           name="body"
           placeholder="What's on your mind?"
           value={formData.body}
+          ref={textInputRef}
           onChange={handleInputChange}
           onKeyUp={handleOnKeyUp}
           onDrop={handleOnDrop}
