@@ -9,3 +9,4 @@ class BaseError extends Error {
 }
 
 export class RequestError extends BaseError {}
+export class ApiClientError extends BaseError {}
