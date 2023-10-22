@@ -16,23 +16,23 @@ export class ApiClient {
     this.RequestManager = options.requestManager || new RequestManager();
 
     if (!this.baseUrl) {
-      throw new ApiClientError('ApiClient: baseUrl is required');
+      throw new ApiClientError({message: 'ApiClient: baseUrl is required' });
     }
   }
 
-  public async get<T>(endpoint: string): Promise<T | RequestError> {
+  public async get<T>(endpoint: string): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
 
     return await this.RequestManager.get(url);
   }
 
-  public async post<T>(endpoint: string, body: Record<string, any>): Promise<T | RequestError> {
+  public async post<T>(endpoint: string, body: Record<string, any>): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
 
     return await this.RequestManager.post(url, body);
   }
 
-  public async put<T>(endpoint: string, body: Record<string, any>): Promise<T | RequestError> {
+  public async put<T>(endpoint: string, body: Record<string, any>): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
 
     return await this.RequestManager.put(url, body);
