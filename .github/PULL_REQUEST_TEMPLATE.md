@@ -2,7 +2,7 @@
 
 Provide a description of the __changes__ this pull request brings to the codebase.
 
-Close #issue_number
+Closes #issue_number
 
 ## Insight 💡
 
