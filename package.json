@@ -7,9 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest",
+    "test": "jest --coverage",
     "test:watch": "jest --watch",
-    "test:ci": "jest --ci --passWithNoTests",
+    "test:ci": "jest --ci",
     "test:ui": "playwright test --pass-with-no-tests"
   },
   "dependencies": {
