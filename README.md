@@ -32,6 +32,10 @@ Run the UI tests:
 npm run test:ui
 ```
 
+## Deployment
+
+The application is automatically deployed to [Vercel](https://vercel.com) on every push to the `main` branch. The production version is available at [https://aloha-notes.vercel.app](https://aloha-notes.vercel.app).
+
 ## About
 
 This project was created and is maintained by [Olivier Robert](https://github.com/olivierobert).
