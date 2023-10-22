@@ -10,7 +10,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:ci": "jest --ci --passWithNoTests",
-    "test:ui": "playwright test"
+    "test:ui": "playwright test --pass-with-no-tests"
   },
   "dependencies": {
     "next": "13.5.6",
