@@ -19,3 +19,6 @@ jobs:
 
       - name: Run linters
         run: npm run lint
+
+      - name: Run Jest tests
+        run: npm run test:ci
