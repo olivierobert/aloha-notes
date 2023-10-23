@@ -4,7 +4,7 @@
 .list-note {
   --max-line-clamp: 10;
 
-  padding-inline: var(--gap-width-2);
+  padding: var(--gap-width-2);
 
   @include media.breakpoint(lg) {
     padding: var(--gap-width-4);
