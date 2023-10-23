@@ -23,7 +23,9 @@ const ListNote: React.FC<ListNotesProps> = ({ notes }) => {
           <li key={`aloha-note-${note.id}`} className="list-note__item" data-test-id="list-note-item">
             <Link href={`/notes/${note.id}`}>
               <div className="list-note__card">
-                {note.body}
+                <div className="list-note__content">
+                  {note.body}
+                </div>
               </div>
             </Link>
           </li>

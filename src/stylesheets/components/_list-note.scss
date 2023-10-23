@@ -2,6 +2,8 @@
 @use '../mixins/media-queries' as media;
 
 .list-note {
+  --max-line-clamp: 10;
+
   padding-inline: var(--gap-width-2);
 
   @include media.breakpoint(lg) {
@@ -30,5 +32,14 @@
     &:hover {
       transform: scale(1.05);
     }
+  }
+
+  &__content {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: var(--max-line-clamp);
+
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
