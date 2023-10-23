@@ -28,6 +28,14 @@ npm run test
 
 Run the UI tests:
 
+1. First, install the required dependencies:
+
+```bash
+npx playwright install
+```
+
+2. Then, run the tests:
+
 ```bash
 npm run test:ui
 ```

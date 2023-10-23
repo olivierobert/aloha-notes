@@ -3,40 +3,24 @@
 import { useEffect, useState } from "react";
 import Link from 'next/link';
 
-import apiClient, { ENDPOINT } from '@/config/api';
-import { Note } from '@/types/note';
+import useNotes from '@/hooks/useNotes';
+
+import AppHeader from '@/components/AppHeader';
+import AppMain from '@/components/AppMain';
+import Loader from '@/components/Loader';
+import ListNote from '@/components/ListNote';
 
 export default function Home() {
-  const [notes, setNotes] = useState<Note[]>([]);
-
-  const getNotes = async () => {
-    try {
-      const response = await apiClient.get<Note[]>(ENDPOINT.GET_NOTES);
-
-      setNotes(response);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  useEffect(() => {
-    getNotes();
-  },[]);
+  const { notes, isLoading } = useNotes();
 
   return (
     <>
-      <main>
-        <h1>Notes</h1>
-        {notes.length === 0 && <p>No notes yet</p>}
-        <ul>
-          {notes.length && notes.map((note) => (
-            <li key={`aloha-note-${note.id}`}>
-              <div>{note.body}</div>
-              <Link href={`/notes/${note.id}`}>Edit</Link>
-            </li>
-          ))}
-        </ul>
-      </main>
+      <AppHeader
+        title="Notes"
+        rightSection={<Link href="/notes/new" className="button-link">New</Link>} />
+      <AppMain>
+        {isLoading ? <Loader /> : <ListNote notes={notes} />}
+      </AppMain>
     </>
   )
 }

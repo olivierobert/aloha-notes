@@ -1,0 +1,30 @@
+@use "../functions/sizing";
+
+button,
+.button-link {
+  display: flex;
+  align-items: center;
+  padding-inline: sizing.toRem(26);
+
+  min-height: sizing.toRem(40);
+
+  color: white;
+  font-size: var(--font-size-2);
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+
+  background: var(--accent-color);
+  border: none;
+  border-radius: 6px;
+
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  transition: transform 0.1s ease-in-out;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}

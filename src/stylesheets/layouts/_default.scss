@@ -1,0 +1,32 @@
+
+@use '../mixins/grid' as grid;
+@use '../mixins/media-queries' as media;
+
+.layout-default {
+  --header-height: 5rem;
+
+  @media (prefers-color-scheme: dark) {
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--body-background);
+  }
+
+  .app-header {
+    @include grid.containerize-fluid();
+
+    height: var(--header-height);
+  }
+
+  .app-content {
+    @include grid.containerize();
+
+    padding-block: var(--gag-width-2);
+    min-height: calc(100vh - var(--header-height));
+
+    @include media.breakpoint(lg) {
+      padding-block: var(--gap-width-4);
+    }
+  }
+}

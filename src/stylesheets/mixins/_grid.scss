@@ -1,0 +1,20 @@
+@use "../config/root" as config;
+@use "media-queries" as media;
+
+@mixin containerize() {
+  max-width: var(--grid-max-width);
+  padding-inline: var(--gap-width-2);
+  margin-inline: auto;
+
+  @include media.breakpoint(lg) {
+    padding-inline: var(--gap-width-4);
+  }
+}
+
+@mixin containerize-fluid() {
+  padding-inline: var(--gap-width-2);
+
+  @include media.breakpoint(lg) {
+    padding-inline: var(--gap-width-4);
+  }
+}

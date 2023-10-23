@@ -49,6 +49,11 @@ jobs:
         run: npx playwright install --with-deps
         if: steps.playwright-cache.outputs.cache-hit != 'true'
 
+      - name: Configure local environment
+        run: |
+          touch .env.local
+          echo NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }} >> .env.local
+
       - name: Run linters
         run: npm run lint
 

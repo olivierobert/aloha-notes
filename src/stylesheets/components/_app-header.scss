@@ -1,0 +1,32 @@
+@use '../functions/sizing' as sizing;
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  position: relative;
+
+  &:after {
+    --left-offset: calc(var(--gap-width-2) * 2);
+
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: var(--gap-width-2);
+
+    height: 1px;
+    width: calc(100% - var(--left-offset));
+
+    background-color: var(--color-blue-500);
+  }
+
+  &__title {
+    font-size: var(--font-heading-3);
+    font-weight: bold;
+  }
+
+  &__action {
+    min-width: sizing.toRem(80);
+  }
+}

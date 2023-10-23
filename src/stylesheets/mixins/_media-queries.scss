@@ -1,0 +1,19 @@
+@use "../config/root" as config;
+
+@mixin breakpoint($breakpoint) {
+  @if $breakpoint ==sm {
+    @media (min-width: config.$breakpoint-sm) {
+      @content;
+    }
+  }
+
+  @elseif $breakpoint ==lg {
+    @media (min-width: config.$breakpoint-lg) {
+      @content;
+    }
+  }
+
+  @else {
+    @warn "`#{$breakpoint}` is not a valid breakpoint 🐛";
+  }
+}

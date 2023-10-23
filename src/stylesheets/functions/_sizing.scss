@@ -1,0 +1,7 @@
+@function toEm($pixels, $base: 16) {
+  @return calc($pixels / $base) * 1em;
+}
+
+@function toRem($pixels, $base: 16) {
+  @return calc($pixels / $base) * 1rem;
+}
