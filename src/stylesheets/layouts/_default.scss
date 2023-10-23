@@ -1,0 +1,26 @@
+
+@use '../mixins/grid' as grid;
+
+.layout-default {
+  --header-height: 5rem;
+
+  @media (prefers-color-scheme: dark) {
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--body-background);
+  }
+
+  .app-header {
+    @include grid.containerize-fluid();
+
+    height: var(--header-height);
+  }
+
+  .app-content {
+    @include grid.containerize();
+
+    min-height: calc(100vh - var(--header-height));
+  }
+}

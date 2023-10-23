@@ -1,0 +1,13 @@
+@use '../functions/sizing' as sizing;
+
+body {
+  color: var(--body-color);
+  line-height: var(--body-line-height);
+  font-family: var(--font-mono);
+  font-size: sizing.toRem(16);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
