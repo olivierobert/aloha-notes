@@ -18,8 +18,7 @@ export default function Home() {
         title="Notes"
         rightSection={<Link href="/notes/new" className="button-link">New</Link>} />
       <AppMain>
-        {isLoading && <div className="app-loader">Loading...</div>}
-        <ListNote notes={notes} />
+        {isLoading ? <div className="app-loader">Loading...</div> : <ListNote notes={notes} />}
       </AppMain>
     </>
   )

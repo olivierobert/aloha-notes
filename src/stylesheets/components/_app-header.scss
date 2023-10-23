@@ -1,3 +1,5 @@
+@use '../functions/sizing' as sizing;
+
 .app-header {
   display: flex;
   align-items: center;
@@ -22,5 +24,9 @@
   &__title {
     font-size: var(--font-heading-3);
     font-weight: bold;
+  }
+
+  &__action {
+    min-width: sizing.toRem(80);
   }
 }

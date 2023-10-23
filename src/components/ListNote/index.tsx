@@ -3,6 +3,8 @@ import Link from 'next/link';
 
 import { Note } from '@/types/note';
 
+import BlankSlate from '@/components/BlankSlate';
+
 interface ListNotesProps {
   notes: Note[];
 }
@@ -10,9 +12,7 @@ interface ListNotesProps {
 const ListNote: React.FC<ListNotesProps> = ({ notes }) => {
   if (!notes.length) {
     return (
-      <div className="blank-slate">
-        <div className="blank-slate__text">No notes yet</div>
-      </div>
+      <BlankSlate message="No notes yet :-(" />
     );
   }
 
