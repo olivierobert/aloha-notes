@@ -1,0 +1,34 @@
+@use '../mixins/reset' as reset;
+@use '../mixins/media-queries' as media;
+
+.list-note {
+  padding: var(--gap-width-2);
+
+  @include media.breakpoint(lg) {
+    padding: var(--gap-width-4);
+  }
+
+  &__container {
+    @include reset.reset-list();
+
+    @include media.breakpoint(lg) {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--gap-width-4);
+    }
+  }
+
+  &__card {
+    background: white;
+    border-radius: var(--border-radius);
+    margin: 1em;
+    padding: var(--gap-width-4);
+
+    box-shadow: 0 0.5em 0.75em var(--color-blue-300);
+    transition: transform 0.1s ease-in-out;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+}
