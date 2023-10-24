@@ -16,7 +16,7 @@ type EditorState = {
 };
 
 type EditorAction =
-  | { type: EditorActionTypes.EDITOR_IS_FETCHING; payload: any }
+  | { type: EditorActionTypes.EDITOR_IS_FETCHING; }
   | { type: EditorActionTypes.EDITOR_SET_NOTE; payload: any }
   | { type: EditorActionTypes.EDITOR_SAVE_SUCCESS; payload: any }
   | { type: EditorActionTypes.EDITOR_SET_ERROR; payload: any };

@@ -21,6 +21,23 @@ const NoteEditor = ({ noteId, onCreateSuccess } : NoteEditorProps) => {
     setFormData({ ...formData, [name]: value });
   };
 
+  const getNote = async () => {
+    if (!noteId) return;
+
+    dispatch({ type: EditorActionTypes.EDITOR_IS_FETCHING });
+
+    try {
+      let endpointPath = ENDPOINT.GET_NOTE.replace(':id', noteId.toString());
+
+      const fetchedNote = await apiClient.get<Note>(endpointPath);
+
+      setFormData({ body: fetchedNote.body });
+      dispatch({ type: EditorActionTypes.EDITOR_SET_NOTE, payload: fetchedNote });
+    } catch (error) {
+      dispatch({ type: EditorActionTypes.EDITOR_SET_ERROR, payload: error });
+    }
+  }
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -42,6 +59,10 @@ const NoteEditor = ({ noteId, onCreateSuccess } : NoteEditorProps) => {
       dispatch({ type: EditorActionTypes.EDITOR_SET_ERROR, payload: error });
     }
   };
+
+  useEffect(() => {
+    noteId && getNote();
+  }, [noteId]);
 
   return (
     <div className="rich-text-editor">
