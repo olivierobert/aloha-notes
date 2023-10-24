@@ -1,4 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useReducer, useRef, useState } from 'react';
+
+import apiClient, { ENDPOINT } from '@/config/api';
+import { Note } from '@/types/note';
+import { EditorActionTypes, editorInitialState, editorReducer } from './reducer';
 
 export interface NoteEditorProps {
   noteId?: string;
@@ -8,12 +12,35 @@ export interface NoteEditorProps {
 const NoteEditor = ({ noteId, onCreateSuccess } : NoteEditorProps) => {
   const textInputRef = useRef(null);
 
-  const [formData, setFormData] = useState({
-    body: ''
-  });
+  const [formData, setFormData] = useState({ body: '' });
+  const [{ note, error }, dispatch] = useReducer(editorReducer, editorInitialState);
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { name, value } = event.target;
+
+    setFormData({ ...formData, [name]: value });
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    try {
+      let savedNote: Note;
+
+      if (!noteId) {
+        savedNote = await apiClient.post<Note>(ENDPOINT.POST_NOTE, formData);
+      } else {
+        let endpointPath = ENDPOINT.PUT_NOTE.replace(':id', noteId.toString());
+
+        savedNote = await apiClient.put<Note>(endpointPath, formData);
+      }
+
+      dispatch({ type: EditorActionTypes.EDITOR_SET_NOTE, payload: savedNote });
+
+      onCreateSuccess && onCreateSuccess(savedNote.id);
+    } catch (error) {
+      dispatch({ type: EditorActionTypes.EDITOR_SET_ERROR, payload: error });
+    }
   };
 
   return (
@@ -28,10 +55,12 @@ const NoteEditor = ({ noteId, onCreateSuccess } : NoteEditorProps) => {
             placeholder="What's on your mind?"
             defaultValue={formData.body}
             ref={textInputRef}
+            onChange={handleInputChange}
             ></textarea>
-
-          <div dangerouslySetInnerHTML={{__html: formData.body}} />
         </div>
+
+        <div dangerouslySetInnerHTML={{__html: formData.body }} />
+
         <button type="submit">Save</button>
       </form>
     </div>
