@@ -30,7 +30,6 @@ const editorInitialState: EditorState = {
 };
 
 const editorReducer = (state: EditorState, action: EditorAction): EditorState => {
-  console.log(action);
   switch (action.type) {
     case 'EDITOR_IS_FETCHING':
       return {
