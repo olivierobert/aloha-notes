@@ -43,7 +43,7 @@ const NoteEditor = ({ noteId, onCreateSuccess } : NoteEditorProps) => {
     }
   }
 
-  const onTextInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const updatedNote = { ...note, body: event.target.value };
 
     dispatch({ type: EditorActionTypes.EDITOR_SET_NOTE, payload: updatedNote });
@@ -95,7 +95,7 @@ const NoteEditor = ({ noteId, onCreateSuccess } : NoteEditorProps) => {
           name="body"
           value={note.body}
           mentionUsers={collaborators}
-          onChange={onTextInputChange} />
+          onChange={handleChange} />
 
         <button type="submit">Save</button>
       </form>

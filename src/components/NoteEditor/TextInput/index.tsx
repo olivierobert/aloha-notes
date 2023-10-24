@@ -46,7 +46,7 @@ const TextInput: React.FC<TextInputProps> = ({ name, value, mentionUsers, onChan
     matchedUsers: [],
   });
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = event.target;
 
     const textInput = textInputRef.current as unknown as HTMLTextAreaElement;
@@ -69,6 +69,20 @@ const TextInput: React.FC<TextInputProps> = ({ name, value, mentionUsers, onChan
     }
   }
 
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const { mention } = event.currentTarget.dataset;
+    const { hint } = mentionState;
+    const textInput = textInputRef.current as unknown as HTMLTextAreaElement;
+
+    const value = textInput?.value.replace(
+      `${MENTION_KEY_TRIGGER}${hint}`,
+      `${MENTION_KEY_TRIGGER}${mention}`
+    );
+
+    setInputData({ [textInput.name]: value });
+    setMentionState({ ...mentionState, isMentioning: false, showMentions: false, matchedUsers: [] });
+  }
+
   return (
     <div className="note-editor-text-input">
       <div className="note-editor-text-input__form">
@@ -76,10 +90,10 @@ const TextInput: React.FC<TextInputProps> = ({ name, value, mentionUsers, onChan
         <textarea
           name="body"
           placeholder="What's on your mind?"
-          defaultValue={inputData[name]}
+          value={inputData[name]}
           ref={textInputRef}
           onKeyUp={handleKeyUp}
-          onChange={handleInputChange}
+          onChange={handleChange}
           ></textarea>
       </div>
 
@@ -94,7 +108,8 @@ const TextInput: React.FC<TextInputProps> = ({ name, value, mentionUsers, onChan
               <li key={`user-${user.username}`}>
                 <button
                   type="button"
-                  data-mention={`${user.first_name} ${user.last_name}`}>
+                  data-mention={`${user.first_name} ${user.last_name}`}
+                  onClick={handleClick}>
                   {`${user.first_name} ${user.last_name} - ${user.username}`}
                 </button>
               </li>
