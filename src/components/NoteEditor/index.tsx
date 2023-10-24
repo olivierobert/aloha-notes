@@ -1,8 +1,11 @@
-import React, { useEffect, useReducer, useRef, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 
 import apiClient, { ENDPOINT } from '@/config/api';
 import { Note } from '@/types/note';
 import { EditorActionTypes, editorInitialState, editorReducer } from './reducer';
+
+import Loader from '@/components/Loader';
+import TextInput from './TextInput';
 
 export interface NoteEditorProps {
   noteId?: string;
@@ -10,16 +13,7 @@ export interface NoteEditorProps {
 }
 
 const NoteEditor = ({ noteId, onCreateSuccess } : NoteEditorProps) => {
-  const textInputRef = useRef(null);
-
-  const [formData, setFormData] = useState({ body: '' });
   const [{ note, error }, dispatch] = useReducer(editorReducer, editorInitialState);
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const { name, value } = event.target;
-
-    setFormData({ ...formData, [name]: value });
-  };
 
   const getNote = async () => {
     if (!noteId) return;
@@ -31,11 +25,16 @@ const NoteEditor = ({ noteId, onCreateSuccess } : NoteEditorProps) => {
 
       const fetchedNote = await apiClient.get<Note>(endpointPath);
 
-      setFormData({ body: fetchedNote.body });
       dispatch({ type: EditorActionTypes.EDITOR_SET_NOTE, payload: fetchedNote });
     } catch (error) {
       dispatch({ type: EditorActionTypes.EDITOR_SET_ERROR, payload: error });
     }
+  }
+
+  const onTextInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const updatedNote = { ...note, body: event.target.value };
+
+    dispatch({ type: EditorActionTypes.EDITOR_SET_NOTE, payload: updatedNote });
   }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -43,6 +42,7 @@ const NoteEditor = ({ noteId, onCreateSuccess } : NoteEditorProps) => {
 
     try {
       let savedNote: Note;
+      const formData = {...note};
 
       if (!noteId) {
         savedNote = await apiClient.post<Note>(ENDPOINT.POST_NOTE, formData);
@@ -64,23 +64,23 @@ const NoteEditor = ({ noteId, onCreateSuccess } : NoteEditorProps) => {
     noteId && getNote();
   }, [noteId]);
 
+  if (!note) {
+    return (
+      <div className="note-editor">
+        <div className="note-editor__loading"><Loader /></div>
+      </div>
+    );
+  }
+
   return (
-    <div className="rich-text-editor">
+    <div className="note-editor">
       <form onSubmit={handleSubmit}>
         <input type="hidden" name="id" value={noteId} />
 
-        <div>
-          <label htmlFor="body">Body</label>:
-          <textarea
-            name="body"
-            placeholder="What's on your mind?"
-            defaultValue={formData.body}
-            ref={textInputRef}
-            onChange={handleInputChange}
-            ></textarea>
-        </div>
-
-        <div dangerouslySetInnerHTML={{__html: formData.body }} />
+        <TextInput
+          name="body"
+          value={note.body}
+          onChange={onTextInputChange} />
 
         <button type="submit">Save</button>
       </form>
