@@ -10,24 +10,26 @@ interface TextInputProps {
   onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
+interface MentionState {
+  hint: string;
+  isMentioning: boolean;
+  showMentions: boolean;
+  matchedUsers: User[];
+}
+
 const MENTION_KEY_TRIGGER = '@';
 const MENTION_USER_LIMIT = 5;
 
-const getMentionHint = (textInput) => {
-  let hint = '';
-  const element = textInput.current;
-
-  const caretPosition = element?.selectionEnd;
-  const contentSubset = element?.value.toLowerCase().slice(0, caretPosition);
-
+const getMentionHint = (content: string, caretPosition: number) => {
   const regex = /@(\w+)/g;
-  const matches = contentSubset.match(regex);
-  hint = matches?.pop()?.replace(MENTION_KEY_TRIGGER, '');
 
-  return hint;
+  const contentSubset = content.toLowerCase().slice(0, caretPosition);
+  const matches = contentSubset.match(regex);
+
+  return matches?.pop()?.replace(MENTION_KEY_TRIGGER, '');
 }
 
-const getMatchedUsers = (hint, users) => {
+const getMatchedUsers = (hint: string, users: User[] = []) => {
   const isMatch = (user: User) => user.username.startsWith(hint) || user.first_name.startsWith(hint);
 
   return users.filter((user) => isMatch(user)).slice(0, MENTION_USER_LIMIT);
@@ -37,7 +39,7 @@ const TextInput: React.FC<TextInputProps> = ({ name, value, mentionUsers, onChan
   const textInputRef = useRef(null);
 
   const [inputData, setInputData] = useState({ [name]: value });
-  const [mentionState, setMentionState] = useState({
+  const [mentionState, setMentionState] = useState<MentionState>({
     hint: '',
     isMentioning: false,
     showMentions: false,
@@ -46,7 +48,10 @@ const TextInput: React.FC<TextInputProps> = ({ name, value, mentionUsers, onChan
 
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = event.target;
-    const hint = getMentionHint(textInputRef);
+
+    const textInput = textInputRef.current as unknown as HTMLTextAreaElement;
+    const caretPosition = textInput?.selectionEnd;
+    const hint = getMentionHint(value, caretPosition);
 
     if (mentionState.isMentioning && hint) {
       const matchedUsers = getMatchedUsers(hint, mentionUsers);

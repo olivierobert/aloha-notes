@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useCallback, useEffect, useReducer, useState } from 'react';
 
 import apiClient, { ENDPOINT } from '@/config/api';
 import { Note } from '@/types/note';
@@ -17,7 +17,7 @@ const NoteEditor = ({ noteId, onCreateSuccess } : NoteEditorProps) => {
   const [{ note, error }, dispatch] = useReducer(editorReducer, editorInitialState);
   const [collaborators, setCollaborators] = useState<User[]>([]);
 
-  const getNote = async () => {
+  const getNote = useCallback(async () => {
     if (!noteId) return;
 
     dispatch({ type: EditorActionTypes.EDITOR_IS_FETCHING });
@@ -31,7 +31,7 @@ const NoteEditor = ({ noteId, onCreateSuccess } : NoteEditorProps) => {
     } catch (error) {
       dispatch({ type: EditorActionTypes.EDITOR_SET_ERROR, payload: error });
     }
-  }
+  }, [noteId]);
 
   const getCollaborators = async () => {
     try {
@@ -76,7 +76,7 @@ const NoteEditor = ({ noteId, onCreateSuccess } : NoteEditorProps) => {
     noteId && getNote();
 
     getCollaborators();
-  }, [noteId]);
+  }, [noteId, getNote]);
 
   if (!note) {
     return (
