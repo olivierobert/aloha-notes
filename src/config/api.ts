@@ -2,6 +2,7 @@ import { ApiClient } from "@/lib/api/client";
 
 export const ENDPOINT = {
   GET_NOTES: '/notes',
+  GET_NOTE: '/notes/:id',
   POST_NOTE: '/notes',
   PUT_NOTE: '/notes/:id',
 };

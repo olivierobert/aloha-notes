@@ -13,7 +13,7 @@ const EditNotePage = () => {
   const params = useParams();
 
   const editorProps: NoteEditorProps = {
-    noteId: params.id
+    noteId: params.id as string
   };
 
   return (

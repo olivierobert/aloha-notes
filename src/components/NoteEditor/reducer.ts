@@ -16,7 +16,7 @@ type EditorState = {
 };
 
 type EditorAction =
-  | { type: EditorActionTypes.EDITOR_IS_FETCHING; payload: any }
+  | { type: EditorActionTypes.EDITOR_IS_FETCHING; }
   | { type: EditorActionTypes.EDITOR_SET_NOTE; payload: any }
   | { type: EditorActionTypes.EDITOR_SAVE_SUCCESS; payload: any }
   | { type: EditorActionTypes.EDITOR_SET_ERROR; payload: any };
@@ -30,6 +30,7 @@ const editorInitialState: EditorState = {
 };
 
 const editorReducer = (state: EditorState, action: EditorAction): EditorState => {
+  console.log(action);
   switch (action.type) {
     case 'EDITOR_IS_FETCHING':
       return {
