@@ -2,6 +2,7 @@ import React, { useEffect, useReducer, useState } from 'react';
 
 import apiClient, { ENDPOINT } from '@/config/api';
 import { Note } from '@/types/note';
+import { User } from '@/types/user';
 import { EditorActionTypes, editorInitialState, editorReducer } from './reducer';
 
 import Loader from '@/components/Loader';
@@ -14,6 +15,7 @@ export interface NoteEditorProps {
 
 const NoteEditor = ({ noteId, onCreateSuccess } : NoteEditorProps) => {
   const [{ note, error }, dispatch] = useReducer(editorReducer, editorInitialState);
+  const [collaborators, setCollaborators] = useState<User[]>([]);
 
   const getNote = async () => {
     if (!noteId) return;
@@ -26,6 +28,16 @@ const NoteEditor = ({ noteId, onCreateSuccess } : NoteEditorProps) => {
       const fetchedNote = await apiClient.get<Note>(endpointPath);
 
       dispatch({ type: EditorActionTypes.EDITOR_SET_NOTE, payload: fetchedNote });
+    } catch (error) {
+      dispatch({ type: EditorActionTypes.EDITOR_SET_ERROR, payload: error });
+    }
+  }
+
+  const getCollaborators = async () => {
+    try {
+      const collaborators = await apiClient.get<User[]>(ENDPOINT.GET_USERS);
+
+      setCollaborators(collaborators);
     } catch (error) {
       dispatch({ type: EditorActionTypes.EDITOR_SET_ERROR, payload: error });
     }
@@ -62,6 +74,8 @@ const NoteEditor = ({ noteId, onCreateSuccess } : NoteEditorProps) => {
 
   useEffect(() => {
     noteId && getNote();
+
+    getCollaborators();
   }, [noteId]);
 
   if (!note) {
@@ -80,6 +94,7 @@ const NoteEditor = ({ noteId, onCreateSuccess } : NoteEditorProps) => {
         <TextInput
           name="body"
           value={note.body}
+          mentionUsers={collaborators}
           onChange={onTextInputChange} />
 
         <button type="submit">Save</button>
