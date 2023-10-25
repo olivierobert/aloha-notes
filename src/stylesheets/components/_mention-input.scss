@@ -1,6 +1,8 @@
 @use "../functions/sizing" as sizing;
+@use "../mixins/reset" as reset;
 
 .mention-input {
+  position: relative;
 
   &__input,
   &__canvas {
@@ -9,12 +11,73 @@
     width: 100%;
     min-height: sizing.toRem(400);
 
-    border-radius: 6px;
+    line-height: 2;
+
+    border-radius: sizing.toRem(6);
   }
 
   &__canvas {
+    background-color: white;
     border: 1px solid white;
 
-    background-color: white;
+    .highlight {
+      display: inline-block;
+      padding: sizing.toRem(1) sizing.toRem(12);
+
+      line-height: 1.5;
+
+      background: var(--color-pink-500);
+      border-radius: sizing.toRem(24);
+    }
+  }
+}
+
+.mention-input__suggestion {
+  @include reset.reset-list();
+
+  --border-radius: 6px;
+
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+
+  width: sizing.toRem(200);
+
+  background-color: white;
+  border: 1px solid var(--color-blue-100);
+  border-radius: var(--border-radius);
+
+  z-index: 5;
+
+  &:empty {
+    display: none;
+  }
+
+  & > &-item {
+    padding: var(--gap-width-1) var(--gap-width-2);
+
+    &:hover {
+      background-color: var(--color-blue-300);
+    }
+
+    &:first-child {
+      border-top-right-radius: var(--border-radius);
+      border-top-left-radius: var(--border-radius);
+    }
+
+    &:last-child {
+      border-bottom-right-radius: var(--border-radius);
+      border-bottom-left-radius: var(--border-radius);
+    }
+
+    &:not(:last-child) {
+      border-bottom: 1px solid var(--color-blue-100);
+    }
+  }
+
+  &-user {
+    display: inline-block;
+    width: 100%;
+    text-align: left;
   }
 }

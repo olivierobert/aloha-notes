@@ -30,6 +30,7 @@ const MentionInput: React.FC<TextInputProps> = ({ name, value, mentionUsers, onC
   const [{
     hint, isMentioning, matchedUsers, showMentions
   }, dispatch] = useReducer(mentionInputReducer, mentionInputInitialState);
+  const [suggestionCoordinates, setDropdownCoordinates] = useState({ top: 0, left: 0 });
 
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = event.target;
@@ -52,7 +53,7 @@ const MentionInput: React.FC<TextInputProps> = ({ name, value, mentionUsers, onC
 
   const handleKeyUp = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === MENTION_KEY_TRIGGER) {
-      dispatch({ type: MentionInputActionTypes.MENTION_INPUT_IS_MENTONING });
+      dispatch({ type: MentionInputActionTypes.MENTION_INPUT_IS_MENTIONING });
     }
   }
 
@@ -65,8 +66,24 @@ const MentionInput: React.FC<TextInputProps> = ({ name, value, mentionUsers, onC
       `${MENTION_KEY_TRIGGER}${mention}`
     );
 
-    setInputData({ [textInput.name]: value });
     dispatch({ type: MentionInputActionTypes.MENTION_INPUT_HIDE_MENTIONS });
+    setInputData({ [textInput.name]: value });
+  }
+
+  const handleMouseMove = (event: React.MouseEvent<HTMLTextAreaElement, MouseEvent>) => {
+    const { clientX, clientY } = event;
+
+    const textInput = textInputRef.current as unknown as HTMLTextAreaElement;
+    const textInputRect = textInput.getBoundingClientRect();
+
+    const topPosition = clientY - textInputRect.top + 20;
+    const leftPosition = clientX - textInputRect.left;
+
+    if (isMentioning && hint) {
+      return;
+    }
+
+    setDropdownCoordinates({ top: topPosition, left: leftPosition });
   }
 
   useEffect(() => {
@@ -85,25 +102,24 @@ const MentionInput: React.FC<TextInputProps> = ({ name, value, mentionUsers, onC
           ref={textInputRef}
           onKeyUp={handleKeyUp}
           onChange={handleChange}
+          onMouseMove={handleMouseMove}
           ></textarea>
       </div>
 
       {showMentions && (
-        <div className="mention-input__mention">
-          <ul className="mention-input__list">
-            {matchedUsers.length && matchedUsers.map((user) => (
-              <li key={`user-${user.username}`} className="mention-input__item">
-                <button
-                  type="button"
-                  className="mention-input__suggestion"
-                  data-mention={`${user.first_name} ${user.last_name}`}
-                  onClick={handleClick}>
-                  {`${user.first_name} ${user.last_name} - ${user.username}`}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <ul className="mention-input__suggestion" style={{top: `${suggestionCoordinates.top}px`, left: `${suggestionCoordinates.left}px`}}>
+          {matchedUsers.length > 0 && matchedUsers.map((user) => (
+            <li key={`user-${user.username}`} className="mention-input__suggestion-item">
+              <button
+                type="button"
+                className="mention-input__suggestion-user"
+                data-mention={`${user.first_name} ${user.last_name}`}
+                onClick={handleClick}>
+                {`${user.first_name} ${user.last_name}`}
+              </button>
+            </li>
+          ))}
+        </ul>
       )}
     </div>
   );

@@ -8,6 +8,7 @@ import { User } from '@/types/user';
 
 import { createNote, updateNote } from './actions';
 import { handleClickTab } from './handlers';
+import { highlightMention } from './helpers';
 
 import Loader from '@/components/Loader';
 import MentionInput from '@/components/MentionInput';
@@ -87,7 +88,7 @@ const NoteEditor: React.FC<NoteEditorProps> = ({ note, onCreateSuccess } : NoteE
             <div className="note-editor__tab-pane" data-pane="editor-preview">
               <div
                 className="mention-input__canvas"
-                dangerouslySetInnerHTML={{__html: formData.body }} />
+                dangerouslySetInnerHTML={{__html: highlightMention(formData.body) }} />
             </div>
           </div>
         </div>
