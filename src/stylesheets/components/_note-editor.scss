@@ -6,6 +6,12 @@
 
 .note-editor__tab {
 
+  &-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
   &-list {
     display: inline-flex;
     align-items: center;

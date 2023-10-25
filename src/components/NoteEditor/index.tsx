@@ -8,9 +8,12 @@ import { User } from '@/types/user';
 
 import { createNote, updateNote } from './actions';
 import { handleClickTab } from './handlers';
+
+import Loader from '@/components/Loader';
 import MentionInput from '@/components/MentionInput';
 
-const DEBOUNCE_DELAY = 500;
+const DEBOUNCE_DELAY = 1000;
+const FEEDBACK_DELAY = 500;
 
 export interface NoteEditorProps {
   note?: Note;
@@ -24,6 +27,7 @@ const NoteEditor = ({ note, onCreateSuccess } : NoteEditorProps) => {
   const [formData, setFormData] = useState({
     body: note?.body || ''
   });
+  const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState('');
 
   const saveNote = async () => {
@@ -36,8 +40,11 @@ const NoteEditor = ({ note, onCreateSuccess } : NoteEditorProps) => {
   const debouncedSaveNote = useDebouncedCallback(async () => {
     if (!formData.body) return;
 
+    setIsSaving(true);
+
     try {
       saveNote();
+      setTimeout(() => setIsSaving(false), FEEDBACK_DELAY);
     } catch (error) {
       setError(error as string);
     }
@@ -59,10 +66,15 @@ const NoteEditor = ({ note, onCreateSuccess } : NoteEditorProps) => {
         <input type="hidden" name="id" value={note?.id} />
 
         <div className="note-editor__tab">
-          <div className="note-editor__tab-list" onClick={handleClickTab}>
-            <button type="button" className="note-editor__tab-item active" data-target="editor-write">Write</button>
-            <button type="button" className="note-editor__tab-item" data-target="editor-preview">Preview</button>
-          </div>
+          <header className="note-editor__tab-header">
+            <div className="note-editor__tab-list" onClick={handleClickTab}>
+              <button type="button" className="note-editor__tab-item active" data-target="editor-write">Write</button>
+              <button type="button" className="note-editor__tab-item" data-target="editor-preview">Preview</button>
+            </div>
+            <div className="note-editor__tab-actions">
+              {isSaving && <Loader size="xs" />}
+            </div>
+          </header>
 
           <div className="note-editor__tab-content">
             <div className="note-editor__tab-pane active" data-pane="editor-write">
@@ -80,7 +92,7 @@ const NoteEditor = ({ note, onCreateSuccess } : NoteEditorProps) => {
           </div>
         </div>
 
-        <button type="submit" className="only">Save</button>
+        <button type="submit" className="sr-only">Save</button>
       </form>
     </div>
   );
