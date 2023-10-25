@@ -76,9 +76,10 @@ const MentionInput: React.FC<TextInputProps> = ({ name, value, mentionUsers, onC
   return (
     <div className="mention-input">
       <div className="mention-input__form">
-        <label htmlFor="body">Body</label>:
+        <label htmlFor="body" className="sr-only">Content</label>
         <textarea
           name="body"
+          className="mention-input__input"
           placeholder="What's on your mind?"
           value={inputData[name]}
           ref={textInputRef}
@@ -86,10 +87,6 @@ const MentionInput: React.FC<TextInputProps> = ({ name, value, mentionUsers, onC
           onChange={handleChange}
           ></textarea>
       </div>
-
-      <div
-        className="mention-input__canvas"
-        dangerouslySetInnerHTML={{__html: inputData[name] }} />
 
       {showMentions && (
         <div className="mention-input__mention">

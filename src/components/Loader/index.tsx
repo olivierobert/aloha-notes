@@ -1,8 +1,13 @@
 import React from 'react';
+import classNames from 'classnames';
 
-const Loader: React.FC = () => {
+interface LoaderProps {
+  size?: string;
+}
+
+const Loader: React.FC<LoaderProps> = ({ size } : LoaderProps) => {
   return (
-    <div className="loader">
+    <div className={classNames("loader", { "loader--small": size === 'xs' })}>
       <div className="loader__icon">🥥</div>
     </div>
   );

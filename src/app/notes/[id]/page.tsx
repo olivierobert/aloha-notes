@@ -24,7 +24,7 @@ const EditNotePage = () => {
     <>
       <AppHeader
         title="Edit Note"
-        leftSection={<Link href="/" className="button-link">Back</Link>} />
+        leftSection={<Link href="/" className="button-link button-link--secondary">Back</Link>} />
       <AppMain>
         {isLoading ? <Loader /> : <NoteEditor note={note ?? undefined} />}
       </AppMain>

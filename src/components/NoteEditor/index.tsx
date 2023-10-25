@@ -1,11 +1,19 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useDebouncedCallback } from 'use-debounce';
 
-import apiClient, { ENDPOINT } from '@/config/api';
+import { ENDPOINT } from '@/config/api';
 import useQuery from '@/hooks/useQuery';
 import { Note } from '@/types/note';
 import { User } from '@/types/user';
 
-import TextInput from '@/components/MentionInput';
+import { createNote, updateNote } from './actions';
+import { handleClickTab } from './handlers';
+
+import Loader from '@/components/Loader';
+import MentionInput from '@/components/MentionInput';
+
+const DEBOUNCE_DELAY = 1000;
+const FEEDBACK_DELAY = 500;
 
 export interface NoteEditorProps {
   note?: Note;
@@ -13,36 +21,43 @@ export interface NoteEditorProps {
   onCreateSuccess?: (noteId: string) => void;
 }
 
-const NoteEditor = ({ note, onCreateSuccess } : NoteEditorProps) => {
+const NoteEditor: React.FC<NoteEditorProps> = ({ note, onCreateSuccess } : NoteEditorProps) => {
   const {resource: collaborators} = useQuery<User[]>(ENDPOINT.GET_USERS);
 
   const [formData, setFormData] = useState({
     body: note?.body || ''
   });
+  const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState('');
 
-  const handleChange = useCallback((value: string) => {
-    setFormData({ body: value });
-  }, [])
+  const saveNote = async () => {
+    let savedNote: Note = !note ?
+        await createNote(formData) : await updateNote(note.id, formData)
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+    onCreateSuccess && onCreateSuccess(savedNote.id);
+  }
+
+  const debouncedSaveNote = useDebouncedCallback(async () => {
+    if (!formData.body) return;
+
+    setIsSaving(true);
 
     try {
-      let savedNote: Note;
-
-      if (!note) {
-        savedNote = await apiClient.post<Note>(ENDPOINT.POST_NOTE, formData);
-      } else {
-        let endpointPath = ENDPOINT.PUT_NOTE.replace(':id', note.id.toString());
-
-        savedNote = await apiClient.put<Note>(endpointPath, formData);
-      }
-
-      onCreateSuccess && onCreateSuccess(savedNote.id);
+      saveNote();
+      setTimeout(() => setIsSaving(false), FEEDBACK_DELAY);
     } catch (error) {
       setError(error as string);
     }
+  }, DEBOUNCE_DELAY);
+
+  const handleChange = useCallback((value: string) => {
+    setFormData({ body: value });
+    debouncedSaveNote();
+  }, [])
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    saveNote();
   };
 
   return (
@@ -50,13 +65,34 @@ const NoteEditor = ({ note, onCreateSuccess } : NoteEditorProps) => {
       <form onSubmit={handleSubmit}>
         <input type="hidden" name="id" value={note?.id} />
 
-        <TextInput
-          name="body"
-          value={formData.body}
-          mentionUsers={collaborators ?? []}
-          onChange={handleChange} />
+        <div className="note-editor__tab">
+          <header className="note-editor__tab-header">
+            <div className="note-editor__tab-list" onClick={handleClickTab}>
+              <button type="button" className="note-editor__tab-item active" data-target="editor-write">Write</button>
+              <button type="button" className="note-editor__tab-item" data-target="editor-preview">Preview</button>
+            </div>
+            <div className="note-editor__tab-actions">
+              {isSaving && <Loader size="xs" />}
+            </div>
+          </header>
 
-        <button type="submit">Save</button>
+          <div className="note-editor__tab-content">
+            <div className="note-editor__tab-pane active" data-pane="editor-write">
+              <MentionInput
+                name="body"
+                value={formData.body}
+                mentionUsers={collaborators ?? []}
+                onChange={handleChange} />
+            </div>
+            <div className="note-editor__tab-pane" data-pane="editor-preview">
+              <div
+                className="mention-input__canvas"
+                dangerouslySetInnerHTML={{__html: formData.body }} />
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" className="sr-only">Save</button>
       </form>
     </div>
   );

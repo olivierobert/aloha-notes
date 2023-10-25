@@ -1,6 +1,21 @@
 @use "../functions/sizing";
 
-button,
+button {
+  font-size: var(--font-size-3);
+  font-weight: bold;
+  text-align: center;
+
+  cursor: pointer;
+
+  background: none;
+  border: none;
+
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+form > button,
 .button-link {
   display: flex;
   align-items: center;
@@ -9,22 +24,34 @@ button,
   min-height: sizing.toRem(40);
 
   color: white;
-  font-size: var(--font-size-2);
-  font-weight: bold;
-  text-align: center;
   text-decoration: none;
 
   background: var(--accent-color);
-  border: none;
   border-radius: 6px;
-
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
 
   transition: transform 0.1s ease-in-out;
 
   &:hover {
     transform: scale(1.05);
   }
+}
+
+.button-link--secondary {
+  color: var(--accent-color);
+  border: 1px solid var(--accent-color);
+  background: none;
+}
+
+.sr-only {
+  position: absolute;
+  padding: 0;
+  margin: -1px;
+
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }
