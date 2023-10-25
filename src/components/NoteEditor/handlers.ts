@@ -1,4 +1,4 @@
-import { React } from 'react';
+import React from 'react';
 
 export const handleClickTab = (event: React.MouseEvent<HTMLDivElement>) => {
   const container = event.currentTarget.closest('.note-editor__tab')

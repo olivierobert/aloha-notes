@@ -3,9 +3,10 @@ import { useDebouncedCallback } from 'use-debounce';
 
 import { ENDPOINT } from '@/config/api';
 import useQuery from '@/hooks/useQuery';
+import { Note } from '@/types/note';
 import { User } from '@/types/user';
 
-import { saveNote, updateNote } from './actions';
+import { createNote, updateNote } from './actions';
 import { handleClickTab } from './handlers';
 import MentionInput from '@/components/MentionInput';
 
@@ -27,7 +28,7 @@ const NoteEditor = ({ note, onCreateSuccess } : NoteEditorProps) => {
 
   const saveNote = async () => {
     let savedNote: Note = !note ?
-        await saveNote(formData) : await updateNote(note.id, formData)
+        await createNote(formData) : await updateNote(note.id, formData)
 
     onCreateSuccess && onCreateSuccess(savedNote.id);
   }
@@ -48,7 +49,8 @@ const NoteEditor = ({ note, onCreateSuccess } : NoteEditorProps) => {
   }, [])
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault() && saveNote();
+    event.preventDefault();
+    saveNote();
   };
 
   return (
