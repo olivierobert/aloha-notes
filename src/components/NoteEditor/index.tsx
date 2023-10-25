@@ -1,11 +1,15 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useDebouncedCallback } from 'use-debounce';
 
-import apiClient, { ENDPOINT } from '@/config/api';
+import { ENDPOINT } from '@/config/api';
 import useQuery from '@/hooks/useQuery';
-import { Note } from '@/types/note';
 import { User } from '@/types/user';
 
+import { saveNote, updateNote } from './actions';
+import { handleClickTab } from './handlers';
 import MentionInput from '@/components/MentionInput';
+
+const DEBOUNCE_DELAY = 500;
 
 export interface NoteEditorProps {
   note?: Note;
@@ -21,47 +25,30 @@ const NoteEditor = ({ note, onCreateSuccess } : NoteEditorProps) => {
   });
   const [error, setError] = useState('');
 
-  const handleChange = useCallback((value: string) => {
-    setFormData({ body: value });
-  }, [])
+  const saveNote = async () => {
+    let savedNote: Note = !note ?
+        await saveNote(formData) : await updateNote(note.id, formData)
 
-  const handleClickTab = (event: React.MouseEvent<HTMLDivElement>) => {
-    const container = event.currentTarget.closest('.note-editor__tab')
-    const target = event.target as HTMLButtonElement;
-    const pane = target.dataset.target;
+    onCreateSuccess && onCreateSuccess(savedNote.id);
+  }
 
-    if (pane) {
-      const activeTab = container?.querySelector('.note-editor__tab-item.active');
-      const activePane = container?.querySelector('.note-editor__tab-pane.active');
-
-      if (activeTab && activePane) {
-        activeTab.classList.remove('active');
-        activePane.classList.remove('active');
-      }
-
-      target.classList.add('active');
-      container?.querySelector(`.note-editor__tab-pane[data-pane="${pane}"]`)?.classList.add('active');
-    }
-  };
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const debouncedSaveNote = useDebouncedCallback(async () => {
+    if (!formData.body) return;
 
     try {
-      let savedNote: Note;
-
-      if (!note) {
-        savedNote = await apiClient.post<Note>(ENDPOINT.POST_NOTE, formData);
-      } else {
-        let endpointPath = ENDPOINT.PUT_NOTE.replace(':id', note.id.toString());
-
-        savedNote = await apiClient.put<Note>(endpointPath, formData);
-      }
-
-      onCreateSuccess && onCreateSuccess(savedNote.id);
+      saveNote();
     } catch (error) {
       setError(error as string);
     }
+  }, DEBOUNCE_DELAY);
+
+  const handleChange = useCallback((value: string) => {
+    setFormData({ body: value });
+    debouncedSaveNote();
+  }, [])
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault() && saveNote();
   };
 
   return (
@@ -91,7 +78,7 @@ const NoteEditor = ({ note, onCreateSuccess } : NoteEditorProps) => {
           </div>
         </div>
 
-        <button type="submit">Save</button>
+        <button type="submit" className="only">Save</button>
       </form>
     </div>
   );
