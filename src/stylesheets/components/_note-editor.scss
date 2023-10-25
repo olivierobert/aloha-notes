@@ -25,6 +25,10 @@
     padding: sizing.toRem(4) sizing.toRem(24);
 
     border-radius: sizing.toRem(24);
+
+    @media (prefers-color-scheme: dark) {
+      color: var(--accent-color);
+    }
   }
 
   &-item.active {
