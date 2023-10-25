@@ -5,7 +5,7 @@ import useQuery from '@/hooks/useQuery';
 import { Note } from '@/types/note';
 import { User } from '@/types/user';
 
-import TextInput from '@/components/MentionInput';
+import MentionInput from '@/components/MentionInput';
 
 export interface NoteEditorProps {
   note?: Note;
@@ -24,6 +24,25 @@ const NoteEditor = ({ note, onCreateSuccess } : NoteEditorProps) => {
   const handleChange = useCallback((value: string) => {
     setFormData({ body: value });
   }, [])
+
+  const handleClickTab = (event: React.MouseEvent<HTMLDivElement>) => {
+    const container = event.currentTarget.closest('.note-editor__tab')
+    const target = event.target as HTMLButtonElement;
+    const pane = target.dataset.target;
+
+    if (pane) {
+      const activeTab = container?.querySelector('.note-editor__tab-item.active');
+      const activePane = container?.querySelector('.note-editor__tab-pane.active');
+
+      if (activeTab && activePane) {
+        activeTab.classList.remove('active');
+        activePane.classList.remove('active');
+      }
+
+      target.classList.add('active');
+      container?.querySelector(`.note-editor__tab-pane[data-pane="${pane}"]`)?.classList.add('active');
+    }
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -50,11 +69,27 @@ const NoteEditor = ({ note, onCreateSuccess } : NoteEditorProps) => {
       <form onSubmit={handleSubmit}>
         <input type="hidden" name="id" value={note?.id} />
 
-        <TextInput
-          name="body"
-          value={formData.body}
-          mentionUsers={collaborators ?? []}
-          onChange={handleChange} />
+        <div className="note-editor__tab">
+          <div className="note-editor__tab-list" onClick={handleClickTab}>
+            <button type="button" className="note-editor__tab-item active" data-target="editor-write">Write</button>
+            <button type="button" className="note-editor__tab-item" data-target="editor-preview">Preview</button>
+          </div>
+
+          <div className="note-editor__tab-content">
+            <div className="note-editor__tab-pane active" data-pane="editor-write">
+              <MentionInput
+                name="body"
+                value={formData.body}
+                mentionUsers={collaborators ?? []}
+                onChange={handleChange} />
+            </div>
+            <div className="note-editor__tab-pane" data-pane="editor-preview">
+              <div
+                className="mention-input__canvas"
+                dangerouslySetInnerHTML={{__html: formData.body }} />
+            </div>
+          </div>
+        </div>
 
         <button type="submit">Save</button>
       </form>

@@ -4,12 +4,16 @@
 
   &__input,
   &__canvas {
+    padding: var(--gap-width-4);
+
     width: 100%;
-    min-height: sizing.toRem(200);
+    min-height: sizing.toRem(400);
+
+    border-radius: 6px;
   }
 
   &__canvas {
-    padding: var(--gap-width-4);
+    border: 1px solid white;
 
     background-color: white;
   }

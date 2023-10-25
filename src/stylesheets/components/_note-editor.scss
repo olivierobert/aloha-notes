@@ -1,0 +1,35 @@
+@use "functions/sizing" as sizing;
+
+.note-editor {
+  min-height: sizing.toRem(400);
+}
+
+.note-editor__tab {
+
+  &-list {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-width-4);
+
+    padding-block: var(--gap-width-2);
+  }
+
+  &-item {
+    padding: sizing.toRem(4) sizing.toRem(24);
+
+    border-radius: sizing.toRem(24);
+  }
+
+  &-item.active {
+    color: white;
+    background-color: var(--accent-color);
+  }
+
+  &-pane {
+    display: none;
+  }
+
+  &-pane.active {
+    display: block;
+  }
+}
