@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import apiClient, { ENDPOINT } from '@/config/api';
 import { Note } from '@/types/note';
@@ -8,7 +8,7 @@ function useQuery<T>(endpoint: string) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const getResource = async () => {
+  const getResource = useCallback(async () => {
     setIsLoading(true);
     setError('');
 
@@ -20,11 +20,11 @@ function useQuery<T>(endpoint: string) {
     } catch (error) {
       setError((error as Error)?.message);
     }
-  };
+  }, [endpoint]);
 
   useEffect(() => {
     getResource();
-  }, []);
+  }, [getResource]);
 
   return {
     resource,

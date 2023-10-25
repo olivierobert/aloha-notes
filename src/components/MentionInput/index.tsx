@@ -13,7 +13,7 @@ interface TextInputProps {
   value: string;
   mentionUsers?: User[];
 
-  onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  onChange: (value: string) => void;
 }
 
 interface MentionState {
@@ -70,8 +70,8 @@ const MentionInput: React.FC<TextInputProps> = ({ name, value, mentionUsers, onC
   }
 
   useEffect(() => {
-    onChange({ target: { name, value: inputData[name] } });
-  }, [inputData[name]]);
+    onChange(inputData[name]);
+  }, [inputData, name, onChange]);
 
   return (
     <div className="mention-input">

@@ -21,9 +21,9 @@ const NoteEditor = ({ note, onCreateSuccess } : NoteEditorProps) => {
   });
   const [error, setError] = useState('');
 
-  const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setFormData({ body: event.target.value });
-  }
+  const handleChange = useCallback((value: string) => {
+    setFormData({ body: value });
+  }, [])
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
