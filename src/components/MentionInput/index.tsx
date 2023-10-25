@@ -3,7 +3,7 @@ import React, { useEffect, useReducer, useRef, useState } from 'react';
 import { User } from '@/types/user';
 
 import { MENTION_KEY_TRIGGER } from './constants';
-import { getMentionHint, getMatchedUsers } from './helpers';
+import { getMentionHint, getMatchedUsers, generateTextAfterInsert } from './helpers';
 import {
   MentionInputActionTypes, mentionInputInitialState, mentionInputReducer 
 } from './reducer';
@@ -51,12 +51,6 @@ const MentionInput: React.FC<TextInputProps> = ({ name, value, mentionUsers, onC
     setInputData({ [name]: value });
   };
 
-  const handleKeyUp = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === MENTION_KEY_TRIGGER) {
-      dispatch({ type: MentionInputActionTypes.MENTION_INPUT_IS_MENTIONING });
-    }
-  }
-
   const handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     const { mention } = event.currentTarget.dataset;
     const textInput = textInputRef.current as unknown as HTMLTextAreaElement;
@@ -68,6 +62,25 @@ const MentionInput: React.FC<TextInputProps> = ({ name, value, mentionUsers, onC
 
     dispatch({ type: MentionInputActionTypes.MENTION_INPUT_HIDE_MENTIONS });
     setInputData({ [textInput.name]: value });
+  }
+
+  const handleDrop: React.DragEventHandler<HTMLTextAreaElement> = (event) => {
+    event.preventDefault();
+
+    const mention = event.dataTransfer.getData('text/plain');
+    const textToInsert = `${MENTION_KEY_TRIGGER}${mention} `;
+    const textInput = textInputRef.current as unknown as HTMLTextAreaElement;
+
+    const updatedText = generateTextAfterInsert(textInput, textToInsert);
+
+    dispatch({ type: MentionInputActionTypes.MENTION_INPUT_HIDE_MENTIONS });
+    setInputData({ [textInput.name]: updatedText });
+  }
+
+  const handleKeyUp = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === MENTION_KEY_TRIGGER) {
+      dispatch({ type: MentionInputActionTypes.MENTION_INPUT_IS_MENTIONING });
+    }
   }
 
   const handleMouseMove = (event: React.MouseEvent<HTMLTextAreaElement, MouseEvent>) => {
@@ -100,8 +113,9 @@ const MentionInput: React.FC<TextInputProps> = ({ name, value, mentionUsers, onC
           placeholder="What's on your mind?"
           value={inputData[name]}
           ref={textInputRef}
-          onKeyUp={handleKeyUp}
           onChange={handleChange}
+          onKeyUp={handleKeyUp}
+          onDrop={handleDrop}
           onMouseMove={handleMouseMove}
           ></textarea>
       </div>
