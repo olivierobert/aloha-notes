@@ -17,24 +17,29 @@
   }
 
   &__canvas {
-    border: 1px solid white;
-
     background-color: white;
+    border: 1px solid white;
 
     .highlight {
       display: inline-block;
-      padding: sizing.toRem(2) sizing.toRem(12);
-      background: var(--color-pink-500);
+      padding: sizing.toRem(1) sizing.toRem(12);
 
+      line-height: 1.5;
+
+      background: var(--color-pink-500);
       border-radius: sizing.toRem(24);
     }
   }
 }
 
 .mention-input__suggestion {
+  @include reset.reset-list();
+
   --border-radius: 6px;
 
   position: absolute;
+  display: flex;
+  flex-direction: column;
 
   width: sizing.toRem(200);
 
@@ -44,16 +49,12 @@
 
   z-index: 5;
 
-  &-list {
-    @include reset.reset-list();
-
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+  &:empty {
+    display: none;
   }
 
-  &-list > &-item {
-    padding: var(--gap-width-1);
+  & > &-item {
+    padding: var(--gap-width-1) var(--gap-width-2);
 
     &:hover {
       background-color: var(--color-blue-300);

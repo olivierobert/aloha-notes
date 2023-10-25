@@ -107,21 +107,19 @@ const MentionInput: React.FC<TextInputProps> = ({ name, value, mentionUsers, onC
       </div>
 
       {showMentions && (
-        <div className="mention-input__suggestion" style={{top: `${suggestionCoordinates.top}px`, left: `${suggestionCoordinates.left}px`}}>
-          <ul className="mention-input__suggestion-list">
-            {matchedUsers.length && matchedUsers.map((user) => (
-              <li key={`user-${user.username}`} className="mention-input__suggestion-item">
-                <button
-                  type="button"
-                  className="mention-input__suggestion-user"
-                  data-mention={`${user.first_name} ${user.last_name}`}
-                  onClick={handleClick}>
-                  {`${user.first_name} ${user.last_name}`}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <ul className="mention-input__suggestion" style={{top: `${suggestionCoordinates.top}px`, left: `${suggestionCoordinates.left}px`}}>
+          {matchedUsers.length > 0 && matchedUsers.map((user) => (
+            <li key={`user-${user.username}`} className="mention-input__suggestion-item">
+              <button
+                type="button"
+                className="mention-input__suggestion-user"
+                data-mention={`${user.first_name} ${user.last_name}`}
+                onClick={handleClick}>
+                {`${user.first_name} ${user.last_name}`}
+              </button>
+            </li>
+          ))}
+        </ul>
       )}
     </div>
   );
