@@ -21,7 +21,7 @@ export interface NoteEditorProps {
   onCreateSuccess?: (noteId: string) => void;
 }
 
-const NoteEditor = ({ note, onCreateSuccess } : NoteEditorProps) => {
+const NoteEditor: React.FC<NoteEditorProps> = ({ note, onCreateSuccess } : NoteEditorProps) => {
   const {resource: collaborators} = useQuery<User[]>(ENDPOINT.GET_USERS);
 
   const [formData, setFormData] = useState({

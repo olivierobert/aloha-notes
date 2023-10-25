@@ -5,7 +5,7 @@ interface LoaderProps {
   size?: string;
 }
 
-const Loader: React.FC = ({ size, text }: LoaderProps) => {
+const Loader: React.FC<LoaderProps> = ({ size } : LoaderProps) => {
   return (
     <div className={classNames("loader", { "loader--small": size === 'xs' })}>
       <div className="loader__icon">🥥</div>
