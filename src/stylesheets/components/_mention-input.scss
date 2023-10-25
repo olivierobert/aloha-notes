@@ -11,13 +11,23 @@
     width: 100%;
     min-height: sizing.toRem(400);
 
-    border-radius: 6px;
+    line-height: 2;
+
+    border-radius: sizing.toRem(6);
   }
 
   &__canvas {
     border: 1px solid white;
 
     background-color: white;
+
+    .highlight {
+      display: inline-block;
+      padding: sizing.toRem(2) sizing.toRem(12);
+      background: var(--color-pink-500);
+
+      border-radius: sizing.toRem(24);
+    }
   }
 }
 
