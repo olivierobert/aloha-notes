@@ -1,6 +1,12 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useReducer, useRef, useState } from 'react';
 
 import { User } from '@/types/user';
+
+import { MENTION_KEY_TRIGGER } from './constants';
+import { getMentionHint, getMatchedUsers } from './helpers';
+import {
+  MentionInputActionTypes, mentionInputInitialState, mentionInputReducer 
+} from './reducer';
 
 interface TextInputProps {
   name: string;
@@ -17,34 +23,13 @@ interface MentionState {
   matchedUsers: User[];
 }
 
-const MENTION_KEY_TRIGGER = '@';
-const MENTION_USER_LIMIT = 5;
-
-const getMentionHint = (content: string, caretPosition: number) => {
-  const regex = /@(\w+)/g;
-
-  const contentSubset = content.toLowerCase().slice(0, caretPosition);
-  const matches = contentSubset.match(regex);
-
-  return matches?.pop()?.replace(MENTION_KEY_TRIGGER, '');
-}
-
-const getMatchedUsers = (hint: string, users: User[] = []) => {
-  const isMatch = (user: User) => user.username.startsWith(hint) || user.first_name.startsWith(hint);
-
-  return users.filter((user) => isMatch(user)).slice(0, MENTION_USER_LIMIT);
-}
-
-const TextInput: React.FC<TextInputProps> = ({ name, value, mentionUsers, onChange }) => {
+const MentionInput: React.FC<TextInputProps> = ({ name, value, mentionUsers, onChange }) => {
   const textInputRef = useRef(null);
 
   const [inputData, setInputData] = useState({ [name]: value });
-  const [mentionState, setMentionState] = useState<MentionState>({
-    hint: '',
-    isMentioning: false,
-    showMentions: false,
-    matchedUsers: [],
-  });
+  const [{
+    hint, isMentioning, matchedUsers, showMentions
+  }, dispatch] = useReducer(mentionInputReducer, mentionInputInitialState);
 
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = event.target;
@@ -53,25 +38,26 @@ const TextInput: React.FC<TextInputProps> = ({ name, value, mentionUsers, onChan
     const caretPosition = textInput?.selectionEnd;
     const hint = getMentionHint(value, caretPosition);
 
-    if (mentionState.isMentioning && hint) {
+    if (isMentioning && hint) {
       const matchedUsers = getMatchedUsers(hint, mentionUsers);
 
-      setMentionState({ ...mentionState, hint, matchedUsers, showMentions: true });
+      dispatch({
+        type: MentionInputActionTypes.MENTION_INPUT_SHOW_MENTIONS,
+        payload: { hint, matchedUsers }
+      });
     }
 
     setInputData({ [name]: value });
-    onChange(event);
   };
 
   const handleKeyUp = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === MENTION_KEY_TRIGGER) {
-      setMentionState({ ...mentionState, isMentioning: true });
+      dispatch({ type: MentionInputActionTypes.MENTION_INPUT_IS_MENTONING });
     }
   }
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     const { mention } = event.currentTarget.dataset;
-    const { hint } = mentionState;
     const textInput = textInputRef.current as unknown as HTMLTextAreaElement;
 
     const value = textInput?.value.replace(
@@ -80,12 +66,16 @@ const TextInput: React.FC<TextInputProps> = ({ name, value, mentionUsers, onChan
     );
 
     setInputData({ [textInput.name]: value });
-    setMentionState({ ...mentionState, isMentioning: false, showMentions: false, matchedUsers: [] });
+    dispatch({ type: MentionInputActionTypes.MENTION_INPUT_HIDE_MENTIONS });
   }
 
+  useEffect(() => {
+    onChange({ target: { name, value: inputData[name] } });
+  }, [inputData[name]]);
+
   return (
-    <div className="note-editor-text-input">
-      <div className="note-editor-text-input__form">
+    <div className="mention-input">
+      <div className="mention-input__form">
         <label htmlFor="body">Body</label>:
         <textarea
           name="body"
@@ -98,16 +88,17 @@ const TextInput: React.FC<TextInputProps> = ({ name, value, mentionUsers, onChan
       </div>
 
       <div
-        className="note-editor-text-input__display"
+        className="mention-input__canvas"
         dangerouslySetInnerHTML={{__html: inputData[name] }} />
 
-      {mentionState.showMentions && (
-        <div className="note-editor-text-input__mention">
-          <ul>
-            {mentionState.matchedUsers.length && mentionState.matchedUsers.map((user) => (
-              <li key={`user-${user.username}`}>
+      {showMentions && (
+        <div className="mention-input__mention">
+          <ul className="mention-input__list">
+            {matchedUsers.length && matchedUsers.map((user) => (
+              <li key={`user-${user.username}`} className="mention-input__item">
                 <button
                   type="button"
+                  className="mention-input__suggestion"
                   data-mention={`${user.first_name} ${user.last_name}`}
                   onClick={handleClick}>
                   {`${user.first_name} ${user.last_name} - ${user.username}`}
@@ -121,4 +112,4 @@ const TextInput: React.FC<TextInputProps> = ({ name, value, mentionUsers, onChan
   );
 };
 
-export default TextInput;
+export default MentionInput;
