@@ -28,4 +28,3 @@ export const generateTextAfterInsert = (element: HTMLTextAreaElement, text: stri
   // Insert the new text at the caret position
   return [before, text, after].join('');
 };
-
