@@ -7,6 +7,14 @@ interface ListUserProps {
 }
 
 const ListUser: React.FC<ListUserProps> = ({ users }) => {
+  const handleDragStart = (event: React.DragEvent<HTMLButtonElement>) => {
+    const mention = event.currentTarget.dataset.mention;
+
+    if (mention) {
+      event.dataTransfer.setData('text/plain', mention);
+    }
+  }
+
   return (
     <ul className="list-user">
       {users.length > 0 && users.map((user) => (
@@ -14,7 +22,9 @@ const ListUser: React.FC<ListUserProps> = ({ users }) => {
           <button
             type="button"
             className="list-user__user"
-            data-mention={`${user.first_name} ${user.last_name}`}>
+            data-mention={`${user.first_name} ${user.last_name}`}
+            draggable={true}
+            onDragStart={handleDragStart}>
             {`${user.first_name} ${user.last_name}`}
           </button>
         </li>

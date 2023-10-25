@@ -10,6 +10,14 @@ Next.JS-based note-taking application with a focus on UX and simplicity.
 
 ### Development
 
+Copy the `.env.example` file to `.env.local` and fill in the required values:
+
+```bash
+cp .env.example .env.local
+```
+
+Moidy the value of `NEXT_PUBLIC_SESSION` to a specific user session.
+
 Run the development server:
 
 ```bash

@@ -15,3 +15,16 @@ export const getMatchedUsers = (hint: string, users: User[] = []) => {
 
   return users.filter((user) => isMatch(user)).slice(0, MENTION_USER_LIMIT);
 }
+
+export const generateTextAfterInsert = (element: HTMLTextAreaElement, text: string) => {
+  const caretPosition = element.selectionStart ?? text.length;
+  // Adjust the caret position to avoid inserting the text at the beginning of the input
+  const adjustedCaretPosition = caretPosition === 0 ? (element.value.length + 1) : caretPosition;
+
+  // Get the text before and after the caret position
+  const before = element.value.substring(0, adjustedCaretPosition);
+  const after = element.value.substring(adjustedCaretPosition, element.value.length);
+
+  // Insert the new text at the caret position
+  return [before, text, after].join('');
+};
