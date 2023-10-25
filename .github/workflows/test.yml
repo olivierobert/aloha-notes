@@ -53,6 +53,7 @@ jobs:
         run: |
           touch .env.local
           echo NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }} >> .env.local
+          echo NEXT_PUBLIC_SESSION=${{ secrets.NEXT_PUBLIC_SESSION }} >> .env.local
 
       - name: Run linters
         run: npm run lint
