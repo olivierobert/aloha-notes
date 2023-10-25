@@ -1,0 +1,11 @@
+@use "../functions/sizing" as sizing;
+
+@mixin make-pill() {
+  display: inline-block;
+  padding: sizing.toRem(1) sizing.toRem(12);
+
+  font-weight: bold;
+
+  background: var(--color-pink-500);
+  border-radius: sizing.toRem(24);
+}
