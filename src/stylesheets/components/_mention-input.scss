@@ -1,0 +1,16 @@
+@use "../functions/sizing" as sizing;
+
+.mention-input {
+
+  &__input,
+  &__canvas {
+    width: 100%;
+    min-height: sizing.toRem(200);
+  }
+
+  &__canvas {
+    padding: var(--gap-width-4);
+
+    background-color: white;
+  }
+}
