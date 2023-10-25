@@ -9,6 +9,7 @@ export const ENDPOINT = {
   POST_NOTE: `/${SESSION}/notes`,
   PUT_NOTE: `/${SESSION}/notes/:id`,
   GET_USERS: '/users',
+  GET_USERS_MOST_MENTIONED: '/users/mostMentioned',
 };
 
 const apiClient = new ApiClient({ baseUrl: API_BASE_URL as string });

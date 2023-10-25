@@ -11,6 +11,7 @@ import { handleClickTab } from './handlers';
 import { highlightMention } from './helpers';
 
 import Loader from '@/components/Loader';
+import ListUser from '@/components/ListUser';
 import MentionInput from '@/components/MentionInput';
 
 const DEBOUNCE_DELAY = 1000;
@@ -24,6 +25,7 @@ export interface NoteEditorProps {
 
 const NoteEditor: React.FC<NoteEditorProps> = ({ note, onCreateSuccess } : NoteEditorProps) => {
   const {resource: collaborators} = useQuery<User[]>(ENDPOINT.GET_USERS);
+  const {resource: mostMentionedUsers} = useQuery<User[]>(ENDPOINT.GET_USERS_MOST_MENTIONED);
 
   const [formData, setFormData] = useState({
     body: note?.body || ''
@@ -79,6 +81,13 @@ const NoteEditor: React.FC<NoteEditorProps> = ({ note, onCreateSuccess } : NoteE
 
           <div className="note-editor__tab-content">
             <div className="note-editor__tab-pane active" data-pane="editor-write">
+              <div className="note-editor__toolbar">
+                <div className="note-editor__toolbar-item">
+                  <div className="note-editor__toolbar-label">Tag a collaborator</div>
+                  {mostMentionedUsers && <ListUser users={mostMentionedUsers} />}
+                </div>
+              </div>
+
               <MentionInput
                 name="body"
                 value={formData.body}
