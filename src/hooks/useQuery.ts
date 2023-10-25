@@ -3,34 +3,34 @@ import { useState, useEffect } from 'react';
 import apiClient, { ENDPOINT } from '@/config/api';
 import { Note } from '@/types/note';
 
-function useNotes() {
-  const [notes, setNotes] = useState<Note[]>([]);
+function useQuery<T>(endpoint: string) {
+  const [resource, setResource] = useState<T | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const getNotes = async () => {
+  const getResource = async () => {
     setIsLoading(true);
     setError('');
 
     try {
-      const response = await apiClient.get<Note[]>(ENDPOINT.GET_NOTES);
+      const response = await apiClient.get<T>(endpoint);
 
       setIsLoading(false);
-      setNotes(response);
+      setResource(response);
     } catch (error) {
       setError((error as Error)?.message);
     }
   };
 
   useEffect(() => {
-    getNotes();
+    getResource();
   }, []);
 
   return {
-    notes,
+    resource,
     isLoading,
     error
   };
 }
 
-export default useNotes;
+export default useQuery;
