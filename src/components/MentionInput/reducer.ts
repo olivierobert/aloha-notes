@@ -1,7 +1,7 @@
 import { User } from '@/types/user';
 
 enum MentionInputActionTypes {
-  MENTION_INPUT_IS_MENTONING = 'MENTION_INPUT_IS_MENTONING',
+  MENTION_INPUT_IS_MENTIONING = 'MENTION_INPUT_IS_MENTIONING',
   MENTION_INPUT_SHOW_MENTIONS = 'MENTION_INPUT_SHOW_MENTIONS',
   MENTION_INPUT_HIDE_MENTIONS = 'MENTION_INPUT_HIDE_MENTIONS',
 }
@@ -14,7 +14,7 @@ type MentionInputState = {
 };
 
 type EditorAction =
-  | { type: MentionInputActionTypes.MENTION_INPUT_IS_MENTONING; }
+  | { type: MentionInputActionTypes.MENTION_INPUT_IS_MENTIONING; }
   | { type: MentionInputActionTypes.MENTION_INPUT_SHOW_MENTIONS; payload: any }
   | { type: MentionInputActionTypes.MENTION_INPUT_HIDE_MENTIONS; };
 
@@ -27,7 +27,7 @@ const mentionInputInitialState: MentionInputState = {
 
 const mentionInputReducer = (state: MentionInputState, action: EditorAction): MentionInputState => {
   switch (action.type) {
-    case 'MENTION_INPUT_IS_MENTONING':
+    case 'MENTION_INPUT_IS_MENTIONING':
       return {
         ...state,
         isMentioning: true
@@ -43,6 +43,7 @@ const mentionInputReducer = (state: MentionInputState, action: EditorAction): Me
       return {
         ...state,
         hint: '',
+        isMentioning: false,
         matchedUsers: [],
         showMentions: false
       };

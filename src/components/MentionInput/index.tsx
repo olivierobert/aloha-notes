@@ -52,7 +52,7 @@ const MentionInput: React.FC<TextInputProps> = ({ name, value, mentionUsers, onC
 
   const handleKeyUp = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === MENTION_KEY_TRIGGER) {
-      dispatch({ type: MentionInputActionTypes.MENTION_INPUT_IS_MENTONING });
+      dispatch({ type: MentionInputActionTypes.MENTION_INPUT_IS_MENTIONING });
     }
   }
 
@@ -65,8 +65,8 @@ const MentionInput: React.FC<TextInputProps> = ({ name, value, mentionUsers, onC
       `${MENTION_KEY_TRIGGER}${mention}`
     );
 
-    setInputData({ [textInput.name]: value });
     dispatch({ type: MentionInputActionTypes.MENTION_INPUT_HIDE_MENTIONS });
+    setInputData({ [textInput.name]: value });
   }
 
   useEffect(() => {
@@ -89,16 +89,16 @@ const MentionInput: React.FC<TextInputProps> = ({ name, value, mentionUsers, onC
       </div>
 
       {showMentions && (
-        <div className="mention-input__mention">
-          <ul className="mention-input__list">
+        <div className="mention-input__suggestion">
+          <ul className="mention-input__suggestion-list">
             {matchedUsers.length && matchedUsers.map((user) => (
-              <li key={`user-${user.username}`} className="mention-input__item">
+              <li key={`user-${user.username}`} className="mention-input__suggestion-item">
                 <button
                   type="button"
-                  className="mention-input__suggestion"
+                  className="mention-input__suggestion-user"
                   data-mention={`${user.first_name} ${user.last_name}`}
                   onClick={handleClick}>
-                  {`${user.first_name} ${user.last_name} - ${user.username}`}
+                  {`${user.first_name} ${user.last_name}`}
                 </button>
               </li>
             ))}

@@ -1,6 +1,8 @@
 @use "../functions/sizing" as sizing;
+@use "../mixins/reset" as reset;
 
 .mention-input {
+  position: relative;
 
   &__input,
   &__canvas {
@@ -16,5 +18,52 @@
     border: 1px solid white;
 
     background-color: white;
+  }
+}
+
+.mention-input__suggestion {
+  --border-radius: 6px;
+
+  position: absolute;
+
+  width: sizing.toRem(200);
+
+  background-color: white;
+  border-radius: var(--border-radius);
+
+  &-list {
+    @include reset.reset-list();
+
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  &-list > &-item {
+    padding: var(--gap-width-1);
+
+    &:hover {
+      background-color: var(--color-blue-300);
+    }
+
+    &:first-child {
+      border-top-right-radius: var(--border-radius);
+      border-top-left-radius: var(--border-radius);
+    }
+
+    &:last-child {
+      border-bottom-right-radius: var(--border-radius);
+      border-bottom-left-radius: var(--border-radius);
+    }
+
+    &:not(:last-child) {
+      border-bottom: 1px solid var(--color-blue-100);
+    }
+  }
+
+  &-user {
+    display: inline-block;
+    width: 100%;
+    text-align: left;
   }
 }
