@@ -1,4 +1,5 @@
 @use "../functions/sizing" as sizing;
+@use "../mixins/button" as button;
 @use "../mixins/reset" as reset;
 
 .mention-input {
@@ -21,13 +22,9 @@
     border: 1px solid white;
 
     .highlight {
-      display: inline-block;
-      padding: sizing.toRem(1) sizing.toRem(12);
+      @include button.make-pill();
 
       line-height: 1.5;
-
-      background: var(--color-pink-500);
-      border-radius: sizing.toRem(24);
     }
   }
 }

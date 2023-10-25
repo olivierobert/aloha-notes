@@ -1,0 +1,14 @@
+@use "../mixins/button" as button;
+@use "../mixins/reset" as reset;
+
+.list-user {
+  @include reset.reset-list();
+
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--gap-width-2);
+
+  &__user {
+    @include button.make-pill();
+  }
+}
