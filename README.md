@@ -55,3 +55,15 @@ The application is automatically deployed to [Vercel](https://vercel.com) on eve
 ## About
 
 This project was created and is maintained by [Olivier Robert](https://github.com/olivierobert).
+
+### Process
+
+The project was developed following this process:
+1. Build a simple prototype with the core features in this branch: https://github.com/olivierobert/aloha-notes/tree/poc. This step was done to remove any technical uncertainties and to validate the core features.
+2. Plan the final implementation with this GitHub Project: https://github.com/users/olivierobert/projects/1
+
+### Known Issues
+
+- Using a third-party for the wysiwyg editor would be easier to maintain and would provide more features, but the goal was to use as few dependencies as possible.
+- Positioning of the "User Mention" dropdown is based on the current mouse position, insteaf of the position of the caret.
+- Additional UI tests are required to validate the note editor.

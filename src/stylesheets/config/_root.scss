@@ -18,7 +18,6 @@ $breakpoint-lg: 64rem;
 
   // Colors
   --accent-color: var(--color-blue-900);
-  --secondary-color: var(--color-rust-100);
 
   --color-blue-100: oklch(93% 0.02 250);
   --color-blue-300: oklch(84% 0.05 248);
@@ -28,7 +27,7 @@ $breakpoint-lg: 64rem;
   --color-pink-500: oklch(93.4% 0.039 350);
 
   // Typography
-  --heading-color: oklch(30% 0.1 38.7);
+  --heading-color: var(--color-blue-900);
 
   --font-size-1: 0.75em;
   --font-size-2: 0.875em;
@@ -50,7 +49,7 @@ $breakpoint-lg: 64rem;
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --body-background: oklch(0 0 0);
-    --body-color: oklch(100% 0 0);
+    // Typography
+    --color-pink-500: oklch(71.32% 0.16 350)
   }
 }
