@@ -1,0 +1,6 @@
+{
+    "sonarlint.connectedMode.project": {
+        "connectionId": "olivierobert",
+        "projectKey": "olivierobert_aloha-notes"
+    }
+}
