@@ -3,7 +3,7 @@ import { User } from '@/types/user';
 
 import { MENTION_KEY_TRIGGER, MENTION_REGEX, MENTION_USER_LIMIT } from './constants';
 
-export const getMentionHint = (content: string, caretPosition: number) => {2
+export const getMentionHint = (content: string, caretPosition: number) => {
   const contentSubset = content.toLowerCase().slice(0, caretPosition);
   const matches = contentSubset.match(MENTION_REGEX);
 

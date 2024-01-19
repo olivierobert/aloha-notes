@@ -7,7 +7,7 @@
     }
   }
 
-  @elseif $breakpoint ==lg {
+  @else if $breakpoint ==lg {
     @media (min-width: config.$breakpoint-lg) {
       @content;
     }
